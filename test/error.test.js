@@ -12,7 +12,11 @@ var name = 'error'
 test('err is serialized with additional properties set on the Error object', function (t) {
   t.plan(2)
   var err = Object.assign(new Error('myerror'), {foo: 'bar'})
-  var instance = pino(sink(function (chunk, enc, cb) {
+  var instance = pino({
+    serializers: {
+      err: pino.stdSerializers.err
+    }
+  }, sink(function (chunk, enc, cb) {
     t.ok(new Date(chunk.time) <= new Date(), 'time is greater than Date.now()')
     delete chunk.time
     t.deepEqual(chunk, {
@@ -35,7 +39,11 @@ test('err is serialized with additional properties set on the Error object', fun
 test('type should be retained, even if type is a property', function (t) {
   t.plan(2)
   var err = Object.assign(new Error('myerror'), {type: 'bar'})
-  var instance = pino(sink(function (chunk, enc, cb) {
+  var instance = pino({
+    serializers: {
+      err: pino.stdSerializers.err
+    }
+  }, sink(function (chunk, enc, cb) {
     t.ok(new Date(chunk.time) <= new Date(), 'time is greater than Date.now()')
     delete chunk.time
     t.deepEqual(chunk, {
@@ -57,7 +65,11 @@ test('type should be retained, even if type is a property', function (t) {
 test('type, message and stack should be first level properties', function (t) {
   t.plan(2)
   var err = Object.assign(new Error('foo'), { foo: 'bar' })
-  var instance = pino(sink(function (chunk, enc, cb) {
+  var instance = pino({
+    serializers: {
+      err: pino.stdSerializers.err
+    }
+  }, sink(function (chunk, enc, cb) {
     t.ok(new Date(chunk.time) <= new Date(), 'time is greater than Date.now()')
     delete chunk.time
     t.deepEqual(chunk, {

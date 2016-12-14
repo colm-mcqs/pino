@@ -238,15 +238,17 @@ Pino.prototype.asJson = function asJson (obj, msg, num) {
   }
   var value
   if (obj) {
-    if (obj.stack) {
+    if (obj.stack && !this.serializers.err) {
       data += ',"type":"Error","stack":' + this.stringify(obj.stack)
-    }
-    for (var key in obj) {
-      value = obj[key]
-      if (obj.hasOwnProperty(key) && value !== undefined) {
-        value = this.stringify(this.serializers[key] ? this.serializers[key](value) : value)
-        if (value !== undefined) {
-          data += ',"' + key + '":' + value
+    } else {
+      for (var key in obj) {
+        console.log('key', key, 'val', value)
+        value = obj[key]
+        if (obj.hasOwnProperty(key) && value !== undefined) {
+          value = this.stringify(this.serializers[key] ? this.serializers[key](value) : value)
+          if (value !== undefined) {
+            data += ',"' + key + '":' + value
+          }
         }
       }
     }
